@@ -128,6 +128,15 @@ export default function Navbar() {
                   </div>
                 </Link>
               </div>
+              {/* Search Bar */}
+              <div className="hidden lg:flex lg:flex-1 lg:justify-center px-4">
+                  <input
+                    type="text"
+                    placeholder="Search products..."
+                    className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none"
+                    style={{ backgroundColor: mode === 'dark' ? 'rgb(62 64 66)' : '', color: mode === 'dark' ? 'white' : '', }}
+                  />
+              </div>
 
               <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
