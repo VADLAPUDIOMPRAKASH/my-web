@@ -1,11 +1,38 @@
-import React from 'react'
+import React from 'react';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import './HeroSection.css'; // For custom styles
 
 function HeroSection() {
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+  };
+
   return (
-    <div>
-        <img src="https://images.unsplash.com/photo-1627738668643-1c166aecbf3d?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" />
+    <div className="banner-section">
+      <Slider {...settings}>
+        <div className="banner-slide">
+          <img
+            src="https://static.vecteezy.com/system/resources/previews/004/299/835/original/online-shopping-on-phone-buy-sell-business-digital-web-banner-application-money-advertising-payment-ecommerce-illustration-search-free-vector.jpg"
+            alt="Advertisement 1"
+          />
+        </div>
+        <div className="banner-slide">
+          <img
+            src="src/assets/today harvest today delivery.png"
+            alt="Advertisement 2"
+          />
+        </div>
+      </Slider>
     </div>
-  )
+  );
 }
 
-export default HeroSection
+export default HeroSection;
