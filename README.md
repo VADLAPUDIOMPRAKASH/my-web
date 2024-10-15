@@ -10,4 +10,7 @@ step 8: npm i react-icons
 Step 9: npm install react-slick slick-carousel
 Step 10 :npm i react-tabs
 step 11 :npm install @reduxjs/toolkit react-redux
+step 12 :npm install firebase react-firebase-hooks
+step 13: npm i react-toastify
+
 #00c867
