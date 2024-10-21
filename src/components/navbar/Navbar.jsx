@@ -22,7 +22,9 @@ export default function Navbar() {
 
   return (
     <div className="bg-white sticky top-0 z-50  "  >
+      
       {/* Mobile menu */}
+      
            <Transition.Root show={open} as={Fragment}>
         <Dialog as="div" className="relative z-40 lg:hidden" onClose={setOpen}>
           <Transition.Child
@@ -38,6 +40,7 @@ export default function Navbar() {
           </Transition.Child>
 
           <div className="fixed inset-0 z-40 flex">
+            
             <Transition.Child
               as={Fragment}
               enter="transition ease-in-out duration-300 transform"
@@ -47,6 +50,7 @@ export default function Navbar() {
               leaveFrom="translate-x-0"
               leaveTo="-translate-x-full"
             >
+              
               <Dialog.Panel className="relative flex w-full max-w-xs flex-col overflow-y-auto bg-white pb-12 shadow-xl" style={{ backgroundColor: mode === 'dark' ? 'rgb(40, 44, 52)' : '', color: mode === 'dark' ? 'white' : '', }}>
                 <div className="flex px-4 pb-2 pt-28">
                   <button
@@ -136,14 +140,7 @@ export default function Navbar() {
                 </Link>
               </div>
               {/* Search Bar */}
-              <div className="hidden lg:flex lg:flex-1 lg:justify-center px-4">
-                  <input
-                    type="text"
-                    placeholder="Search products..."
-                    className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none"
-                    style={{ backgroundColor: mode === 'dark' ? 'rgb(62 64 66)' : '', color: mode === 'dark' ? 'white' : '', }}
-                  />
-              </div>
+
 
               <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">

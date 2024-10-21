@@ -13,6 +13,7 @@ import UpdateProduct from './pages/admin/pages/UpdateProduct.jsx';
 import AddProduct from './pages/admin/pages/AddProduct';
 import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Allproducts from './pages/allproducts/AllProducts.jsx';
 
 
 function App() {
@@ -26,6 +27,12 @@ function App() {
               <Order />
             </ProtectedRoute>
             } />
+            <Route path="/allproducts" element={
+            <ProtectedRoute>
+              <Allproducts />
+            </ProtectedRoute>
+            } />
+
             <Route path="/cart" element={<Cart />} />
             <Route path="/dashboard" element={
             <ProtectedRouteForAdmin>
