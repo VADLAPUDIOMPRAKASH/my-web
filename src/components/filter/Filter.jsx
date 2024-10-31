@@ -5,7 +5,7 @@ function Filter() {
     const context = useContext(myContext)
     const { mode, searchkey, setSearchkey } = context
     return (
-        <div className=' container mx-auto px-4 mt-5 '>
+        <div className='container mx-auto px-4 mt-5 z-40 flex flex-col '>
             <div className="p-0 rounded-lg bg-gray-100 drop-shadow-xl border border-gray-200"  style={{ backgroundColor: mode === 'dark' ? '#282c34' : '', color: mode === 'dark' ? 'white' : '', }}>
                 <div className="relative">
                     <div className="absolute flex items-center ml-2 h-full">

@@ -12,5 +12,7 @@ Step 10 :npm i react-tabs
 step 11 :npm install @reduxjs/toolkit react-redux
 step 12 :npm install firebase react-firebase-hooks
 step 13: npm i react-toastify
+step 14: npm install @fortawesome/react-fontawesome @fortawesome/free-solid-svg-icons
+
 
 #00c867

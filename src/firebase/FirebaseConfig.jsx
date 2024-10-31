@@ -6,13 +6,13 @@ import {getStorage} from "firebase/storage"
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDujr-7FIL5e7Cad1VWr90CdqYfpKuE_zs",
-  authDomain: "navedhana-web.firebaseapp.com",
-  projectId: "navedhana-web",
-  storageBucket: "navedhana-web.appspot.com",
-  messagingSenderId: "372018135359",
-  appId: "1:372018135359:web:bc760cf1e093625d14538a",
-  measurementId: "G-9M8XVVN81R"
+  apiKey: "AIzaSyDcxXQM5pZZ2O299_glgkcxKdUKxLqCfy0",
+  authDomain: "navedhana-c4275.firebaseapp.com",
+  projectId: "navedhana-c4275",
+  storageBucket: "navedhana-c4275.appspot.com",
+  messagingSenderId: "117192151571",
+  appId: "1:117192151571:web:817fb8452d2ce41e5065e6",
+  measurementId: "G-KX2K13R4EP"
 };
 
 // Initialize Firebase

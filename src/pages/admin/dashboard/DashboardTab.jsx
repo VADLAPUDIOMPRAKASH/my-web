@@ -67,7 +67,7 @@ function DashboardTab() {
                                     </div>
                                 </div>
                                 <div className="relative overflow-x-auto ">
-                                    <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400  ">
+                                    <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                                         <thead className="text-xs border border-gray-600 text-black uppercase bg-gray-200 shadow-[inset_0_0_8px_rgba(0,0,0,0.6)]" style={{ backgroundColor: mode === 'dark' ? 'rgb(46 49 55)' : '', color: mode === 'dark' ? 'white' : '', }} >
                                             <tr>
                                                 <th scope="col" className="px-6 py-3">

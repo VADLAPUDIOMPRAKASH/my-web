@@ -1,207 +1,162 @@
-import React, { useContext, useEffect, useState } from 'react'
-import Layout from '../../components/layout/Layout'
-import myContext from '../../context/data/myContext';
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { doc, getDoc } from 'firebase/firestore';
 import { toast } from 'react-toastify';
 import { addToCart } from '../../redux/cartSlice';
 import { fireDB } from '../../firebase/FirebaseConfig';
+import Layout from '../../components/layout/Layout';
+import myContext from '../../context/data/myContext';
+import { Leaf } from 'lucide-react';
 
 function ProductInfo() {
     const context = useContext(myContext);
     const { loading, setLoading } = context;
-
-    const [products, setProducts] = useState('')
-    const params = useParams()
-    // console.log(products.title)
+    const [products, setProducts] = useState('');
+    const [quantity, setQuantity] = useState(1);
+    const params = useParams();
+    const dispatch = useDispatch();
+    const cartItems = useSelector((state) => state.cart);
 
     const getProductData = async () => {
-        setLoading(true)
+        setLoading(true);
         try {
-            const productTemp = await getDoc(doc(fireDB, "products", params.id))
-            // console.log(productTemp)
+            const productTemp = await getDoc(doc(fireDB, "products", params.id));
             setProducts(productTemp.data());
-            // console.log(productTemp.data())
-            setLoading(false)
+            setLoading(false);
         } catch (error) {
-            console.log(error)
-            setLoading(false)
+            console.log(error);
+            setLoading(false);
         }
     }
 
-
     useEffect(() => {
-        getProductData()
+        getProductData();
+    }, []);
 
-    }, [])
-
-
-
-    const dispatch = useDispatch()
-    const cartItems = useSelector((state) => state.cart)
-    // console.log(cartItems)
-
-    // add to cart
     const addCart = (products) => {
-        dispatch(addToCart(products))
-        toast.success('add to cart');
+        const productWithQuantity = { ...products, quantity };
+        dispatch(addToCart(productWithQuantity));
+        toast.success('Added to cart');
     }
 
     useEffect(() => {
         localStorage.setItem('cart', JSON.stringify(cartItems));
-    }, [cartItems])
-
-
-
+    }, [cartItems]);
 
     return (
         <Layout>
-            <section className="text-gray-600 body-font overflow-hidden">
-                <div className="container px-5 py-10 mx-auto">
-                    {products && 
-                    <div className="lg:w-4/5 mx-auto flex flex-wrap">
-                        <img
-                            alt="ecommerce"
-                            className="lg:w-1/3 w-full lg:h-auto  object-cover object-center rounded"
-                            src={products.imageUrl}
-                        />
-                        <div className="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
-                            <h2 className="text-sm title-font text-gray-500 tracking-widest">
-                                BRAND NAME
-                            </h2>
-                            <h1 className="text-gray-900 text-3xl title-font font-medium mb-1">
-                                {products.title}
-                            </h1>
-                            <div className="flex mb-4">
-                                <span className="flex items-center">
-                                    <svg
-                                        fill="currentColor"
-                                        stroke="currentColor"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        className="w-4 h-4 text-indigo-500"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                                    </svg>
-                                    <svg
-                                        fill="currentColor"
-                                        stroke="currentColor"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        className="w-4 h-4 text-indigo-500"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                                    </svg>
-                                    <svg
-                                        fill="currentColor"
-                                        stroke="currentColor"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        className="w-4 h-4 text-indigo-500"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                                    </svg>
-                                    <svg
-                                        fill="currentColor"
-                                        stroke="currentColor"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        className="w-4 h-4 text-indigo-500"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                                    </svg>
-                                    <svg
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        className="w-4 h-4 text-indigo-500"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                                    </svg>
-                                    <span className="text-gray-600 ml-3">4 Reviews</span>
-                                </span>
-                                <span className="flex ml-3 pl-3 py-2 border-l-2 border-gray-200 space-x-2s">
-                                    <a className="text-gray-500">
-                                        <svg
-                                            fill="currentColor"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            className="w-5 h-5"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
-                                        </svg>
-                                    </a>
-                                    <a className="text-gray-500">
-                                        <svg
-                                            fill="currentColor"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            className="w-5 h-5"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z" />
-                                        </svg>
-                                    </a>
-                                    <a className="text-gray-500">
-                                        <svg
-                                            fill="currentColor"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            className="w-5 h-5"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" />
-                                        </svg>
-                                    </a>
-                                </span>
+            <div className="min-h-screen bg-gray-50">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    {products && (
+                        <div className="flex flex-col lg:flex-row gap-8">
+                            {/* Product Image */}
+                            <div className="lg:w-1/2">
+                                <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+                                    <img
+                                        src={products.imageUrl}
+                                        alt={products.title}
+                                        className="w-full h-[300px] lg:h-[500px] object-cover"
+                                    />
+                                </div>
                             </div>
-                            <p className="leading-relaxed border-b-2 mb-5 pb-5">
-                                {products.description}
-                            </p>
 
-                            <div className="flex">
-                                <span className="title-font font-medium text-2xl text-gray-900">
-                                ₹{products.price}
-                                </span>
-                                <button  onClick={()=>addCart(products)} className="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">
-                                    Add To Cart
-                                </button>
-                                <button className="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
-                                    <svg
-                                        fill="currentColor"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        className="w-5 h-5"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
-                                    </svg>
-                                </button>
+                            {/* Product Details */}
+                            <div className="lg:w-1/2">
+                                <div className="bg-white rounded-lg shadow-lg p-6">
+                                    <div className="flex items-center gap-2 text-green-600 mb-2">
+                                        <Leaf className="w-5 h-5" />
+                                        <span className="text-sm font-medium">Fresh Produce</span>
+                                    </div>
+
+                                    <h1 className="text-2xl lg:text-4xl font-bold text-gray-900 mb-4">
+                                        {products.title}
+                                    </h1>
+
+                                    <div className="flex items-center mb-6">
+                                        <div className="flex items-center">
+                                            {[1, 2, 3, 4, 5].map((star) => (
+                                                <svg
+                                                    key={star}
+                                                    className={`w-5 h-5 ${star <= 4 ? 'text-yellow-400' : 'text-gray-300'}`}
+                                                    fill="currentColor"
+                                                    viewBox="0 0 20 20"
+                                                >
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                </svg>
+                                            ))}
+                                        </div>
+                                        {/* <span className="text-gray-500 ml-3">(3.0) • Fresh Stock Daily</span> */}
+                                    </div>
+
+                                    <div className="prose prose-green max-w-none mb-6">
+                                        <p className="text-gray-600">{products.description}</p>
+                                    </div>
+
+                                    <div className="border-t border-gray-200 pt-6">
+                                        <div className="flex items-center justify-between mb-6">
+                                            <div className="flex items-center">
+                                                <span className="text-3xl font-bold text-gray-900">₹{products.price}</span>
+                                                <span className="text-sm text-gray-500 ml-2">per kg</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <button 
+                                                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                                                    className="p-2 rounded-full bg-gray-100 hover:bg-gray-200"
+                                                >
+                                                    -
+                                                </button>
+                                                <span className="w-12 text-center">{quantity} kg</span>
+                                                <button 
+                                                    onClick={() => setQuantity(quantity + 1)}
+                                                    className="p-2 rounded-full bg-gray-100 hover:bg-gray-200"
+                                                >
+                                                    +
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex flex-col sm:flex-row gap-4">
+                                            <button
+                                                onClick={() => addCart(products)}
+                                                className="flex-1 bg-green-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-green-700 transition-colors duration-200"
+                                            >
+                                                Add to Cart
+                                            </button>
+                                            <button className="flex-1 border border-green-600 text-green-600 py-3 px-6 rounded-lg font-medium hover:bg-green-50 transition-colors duration-200">
+                                                Buy Now
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-6 space-y-4">
+                                        <div className="flex items-center gap-3 text-sm text-gray-600">
+                                            <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            Fresh from local farmers
+                                        </div>
+                                        <div className="flex items-center gap-3 text-sm text-gray-600">
+                                            <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            Same day delivery available
+                                        </div>
+                                        <div className="flex items-center gap-3 text-sm text-gray-600">
+                                            <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            Quality guaranteed
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>}
+                    )}
                 </div>
-            </section>
-
+            </div>
         </Layout>
-    )
+    );
 }
 
-export default ProductInfo
+export default ProductInfo;

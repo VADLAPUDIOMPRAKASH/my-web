@@ -8,15 +8,16 @@ import Testimonial from '../../components/testimonial/Testimonial';
 import Filter from '../../components/filter/Filter';
 
 function Home() {
-  
   return (
     <Layout>
-      <Filter />
-      <HeroSection/>
-      <ProductCard/>
-      <Track/>
-      <Testimonial/>
-      
+      {/* Add padding to prevent content from being obscured by the fixed navbar */}
+      <div style={{ paddingTop: '60px' }}> {/* Adjust the height if needed */}
+        <Filter />
+        <HeroSection />
+        <ProductCard />
+        <Track />
+        <Testimonial />
+      </div>
     </Layout>
   );
 }

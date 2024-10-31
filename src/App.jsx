@@ -27,12 +27,7 @@ function App() {
               <Order />
             </ProtectedRoute>
             } />
-            <Route path="/allproducts" element={
-            <ProtectedRoute>
-              <Allproducts />
-            </ProtectedRoute>
-            } />
-
+            <Route path="/allproducts" element={<Allproducts />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/dashboard" element={
             <ProtectedRouteForAdmin>

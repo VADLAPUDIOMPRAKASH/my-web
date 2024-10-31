@@ -25,6 +25,7 @@ function MyState(props) {
   const [products, setProducts] = useState({
     title: null,
     price: null,
+    actualprice: null,
     imageUrl: null,
     category: null,
     description: null,
@@ -42,7 +43,7 @@ function MyState(props) {
 
   // ********************** Add Product Section  **********************
   const addProduct = async () => {
-    if (products.title == null || products.price == null || products.imageUrl == null || products.category == null || products.description == null) {
+    if (products.title == null || products.price == null || products.actualprice==null || products.imageUrl == null || products.category == null || products.description == null) {
         return toast.error('Please fill all fields');
     }
     
@@ -50,7 +51,15 @@ function MyState(props) {
     setLoading(true);
     
     try {
-        await addDoc(productRef, products);
+      await addDoc(productRef, {
+          ...products,
+          time: Timestamp.now(),
+          date: new Date().toLocaleString("en-US", {
+              month: "short",
+              day: "2-digit",
+              year: "numeric",
+          }),
+      });
         toast.success("Product added successfully");
         setTimeout(() => {
             window.location.href = '/dashboard';
