@@ -4,7 +4,7 @@ import myContext from '../../context/data/myContext';
 import HeroSection from '../../components/heroSection/HeroSection';
 import ProductCard from '../../components/productCard/productCard';
 import Track from '../../components/track/Track';
-import Testimonial from '../../components/testimonial/Testimonial';
+//import Testimonial from '../../components/testimonial/Testimonial';
 import Filter from '../../components/filter/Filter';
 
 function Home() {
@@ -16,7 +16,7 @@ function Home() {
         <HeroSection />
         <ProductCard />
         <Track />
-        <Testimonial />
+        
       </div>
     </Layout>
   );

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Leaf } from 'lucide-react';
-import { deleteFromCart, incrementQuantity, decrementQuantity } from '../../redux/cartSlice';
+import { deleteFromCart, incrementQuantity, decrementQuantity, clearCart} from '../../redux/cartSlice';
 import { toast } from 'react-toastify';
 import { addDoc, collection } from 'firebase/firestore';
 import { fireDB } from '../../firebase/FirebaseConfig.jsx';
@@ -23,13 +23,16 @@ function Cart() {
   const [totalAmount, setTotalAmount] = useState(0);
   const [totalWeight, setTotalWeight] = useState(0);
 
+  // Constants for quantity management
+  const MIN_QUANTITY = 0.25;
+  const QUANTITY_STEP = 0.25;
+
   useEffect(() => {
     let tempAmount = 0;
     let tempWeight = 0;
     cartItems.forEach((item) => {
-      // Ensure price and quantity are numbers
       const itemPrice = Number(item.price) || 0;
-      const itemQuantity = Number(item.quantity) || 1;
+      const itemQuantity = Number(item.quantity) || MIN_QUANTITY;
       const itemWeight = Number(item.weight) || 0;
       
       tempAmount += itemPrice * itemQuantity;
@@ -39,8 +42,7 @@ function Cart() {
     setTotalWeight(tempWeight);
   }, [cartItems]);
 
-  const shipping = totalWeight > 5 ? 0 : 50; // Free shipping over 5kg
-  const grandTotal = shipping + totalAmount;
+  const grandTotal = totalAmount;
 
   const deleteFromCartHandler = (item) => {
     dispatch(deleteFromCart(item));
@@ -48,12 +50,16 @@ function Cart() {
   };
 
   const handleIncrement = (item) => {
-    dispatch(incrementQuantity(item));
+    const newQuantity = Number((Number(item.quantity || MIN_QUANTITY) + QUANTITY_STEP).toFixed(2));
+    dispatch(incrementQuantity({ ...item, quantity: newQuantity }));
   };
 
   const handleDecrement = (item) => {
-    if (item.quantity > 1) {
-      dispatch(decrementQuantity(item));
+    const currentQuantity = Number(item.quantity || MIN_QUANTITY);
+    
+    if (currentQuantity > MIN_QUANTITY) {
+      const newQuantity = Number((currentQuantity - QUANTITY_STEP).toFixed(2));
+      dispatch(decrementQuantity({ ...item, quantity: newQuantity }));
     } else {
       dispatch(deleteFromCart(item));
       toast.success('Item removed from cart');
@@ -62,29 +68,33 @@ function Cart() {
 
   const buyNow = async () => {
     if (!name || !address || !pincode || !phoneNumber) {
-      toast.error("All fields are required", {
-        position: "top-center",
-        autoClose: 1000,
-        theme: "colored",
-      });
+      toast.error("All fields are required", { position: "top-center", autoClose: 1000, theme: "colored" });
       return;
     }
-
-    const addressInfo = {
-      name,
-      address,
-      pincode,
-      phoneNumber,
-      date: new Date().toLocaleString("en-US", {
-        month: "short",
-        day: "2-digit",
-        year: "numeric",
-      })
-    };
-
-    // Payment integration code remains the same
+  
+    try {
+      const addressInfo = {
+        name,
+        address,
+        pincode,
+        phoneNumber,
+        date: new Date().toLocaleString("en-US", {
+          month: "short",
+          day: "2-digit",
+          year: "numeric",
+        })
+      };
+  
+      await addDoc(collection(fireDB, "orders"), { ...addressInfo, cartItems, totalAmount, grandTotal });
+      toast.success("Order placed successfully!");
+  
+      dispatch(clearCart());
+      localStorage.removeItem('cart');
+    } catch (error) {
+      toast.error("Failed to place order. Please try again.");
+    }
   };
-
+  
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cartItems));
   }, [cartItems]);
@@ -128,7 +138,7 @@ function Cart() {
                           <div>
                             <h3 className="font-semibold text-lg">{item.title}</h3>
                             <p className="text-sm text-gray-600" style={{ color: mode === 'dark' ? '#999' : '' }}>
-                              {Number(item.weight).toFixed(2)}kg per unit
+                              Min. order: {MIN_QUANTITY}kg (±{QUANTITY_STEP}kg)
                             </p>
                           </div>
                           <button 
@@ -150,7 +160,9 @@ function Cart() {
                             >
                               -
                             </button>
-                            <span className="w-8 text-center">{item.quantity || 1}</span>
+                            <span className="w-20 text-center">
+                              {Number(item.quantity || MIN_QUANTITY).toFixed(2)}kg
+                            </span>
                             <button 
                               onClick={() => handleIncrement(item)}
                               className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200"
@@ -159,7 +171,9 @@ function Cart() {
                               +
                             </button>
                           </div>
-                          <p className="font-semibold">₹{(Number(item.price) * (Number(item.quantity) || 1)).toFixed(2)}</p>
+                          <p className="font-semibold">
+                            ₹{(Number(item.price) * Number(item.quantity || MIN_QUANTITY)).toFixed(2)}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -185,10 +199,7 @@ function Cart() {
                     <span>Total Weight</span>
                     <span>{totalWeight.toFixed(2)} kg</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>Shipping</span>
-                    <span>{shipping === 0 ? 'Free' : `₹${shipping.toFixed(2)}`}</span>
-                  </div>
+                  
                   <div className="h-px bg-gray-200 my-4"></div>
                   <div className="flex justify-between text-lg font-semibold">
                     <span>Total</span>

@@ -78,6 +78,18 @@ export default function Navbar() {
                       admin
                     </Link>
                   </div> : ""}
+                  <div className="flow-root">
+                    <Link to={'/whyus'} className="text-sm font-medium text-green-700" style={{ color: mode === 'dark' ? 'white' : '', }}>
+                      Why us?
+                    </Link>
+                  </div>
+                  <div className="flow-root">
+                    <Link to={'/about'} className="text-sm font-medium text-green-700" style={{ color: mode === 'dark' ? 'white' : '', }}>
+                      About
+                    </Link>
+                  </div>
+
+
 
                   {user ? <div className="flow-root">
                     <a onClick={logout} className="text-sm font-medium text-green-700 cursor-pointer" style={{ color: mode === 'dark' ? 'white' : '', }}>
@@ -148,12 +160,20 @@ export default function Navbar() {
                     </Link> : ""
                   }
 
+                  <Link to={'/whyus'} className="text-sm font-medium text-green-600 font-poppins " style={{ color: mode === 'dark' ? 'white' : '', }}>
+                    Why us?
+                  </Link>
+
+                  <Link to={'/about'} className="text-sm font-medium text-green-600 font-poppins " style={{ color: mode === 'dark' ? 'white' : '', }}>
+                    About
+                  </Link>
 
                   {user ? <a onClick={logout} className="text-sm font-medium text-green-600 font-poppins cursor-pointer  " style={{ color: mode === 'dark' ? 'white' : '', }}>
                     Logout
                   </a> : <Link to={'/login'} className="text-sm font-medium text-green-600 font-poppins cursor-pointer  " style={{ color: mode === 'dark' ? 'white' : '', }}>
                     Login
                   </Link>}
+
 
                 </div>
 

@@ -14,6 +14,8 @@ import AddProduct from './pages/admin/pages/AddProduct';
 import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Allproducts from './pages/allproducts/AllProducts.jsx';
+import About from './pages/about/About.jsx';
+import WhyUs from './pages/whyus/WhyUs.jsx';  
 
 
 function App() {
@@ -39,6 +41,8 @@ function App() {
             <Route path="/productinfo/:id" element={<ProductInfo />} />
             <Route path="/updateproduct" element={<UpdateProduct />} />
             <Route path="/addproduct" element={<AddProduct />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/whyus" element={<WhyUs />} />
             <Route path="*" element={<Nopage />} />
           </Routes>
           <ToastContainer position="top-center" />

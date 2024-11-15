@@ -43,36 +43,54 @@ function MyState(props) {
 
   // ********************** Add Product Section  **********************
   const addProduct = async () => {
-    if (products.title == null || products.price == null || products.actualprice==null || products.imageUrl == null || products.category == null || products.description == null) {
-        return toast.error('Please fill all fields');
-    }
+    const requiredFields = ['title', 'price', 'actualprice', 'imageUrl', 'category', 'description'];
     
+    // Validate that all required fields are filled
+    for (const field of requiredFields) {
+        if (!products[field]) {
+            return toast.error(`Please fill all fields`);
+        }
+    }
+
     const productRef = collection(fireDb, "products");
     setLoading(true);
     
     try {
-      await addDoc(productRef, {
-          ...products,
-          time: Timestamp.now(),
-          date: new Date().toLocaleString("en-US", {
-              month: "short",
-              day: "2-digit",
-              year: "numeric",
-          }),
-      });
+        await addDoc(productRef, {
+            ...products,
+            time: Timestamp.now(),
+            date: new Date().toLocaleString("en-US", {
+                month: "short",
+                day: "2-digit",
+                year: "numeric",
+            }),
+        });
         toast.success("Product added successfully");
+        
+        // Delay to show the toast before navigating
         setTimeout(() => {
             window.location.href = '/dashboard';
-        }, 800); // Delay to show the toast before navigating
-        getProductData();
-        closeModal();
+        }, 800);
+        
+        getProductData(); // Call this to refresh product data
+        closeModal(); // Close the modal after adding the product
+
     } catch (error) {
         console.log(error);
+        toast.error("Failed to add product. Please try again."); // Inform the user of the error
     } finally {
         setLoading(false);
     }
     
-    setProducts("");
+    // Reset products state to an empty object
+    setProducts({
+        title: '',
+        price: '',
+        actualprice: '',
+        imageUrl: '',
+        category: '',
+        description: ''
+    });
 };
 
 
@@ -141,23 +159,24 @@ function MyState(props) {
   }
   const [order, setOrder] = useState([]);
 
-  const getOrderData = async () => {
-    setLoading(true)
-    try {
-      const result = await getDocs(collection(fireDb, "orders"))
+  const getOrderData = () => {
+    const q = query(collection(fireDb, "orders"));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const ordersArray = [];
-      result.forEach((doc) => {
-        ordersArray.push(doc.data());
-        setLoading(false)
+      querySnapshot.forEach((doc) => {
+        ordersArray.push({ ...doc.data(), id: doc.id });
       });
-      setOrder(ordersArray);
-      console.log(ordersArray)
+      setOrder(ordersArray); // Update the orders state
+      setLoading(false); // Set loading to false after fetching
+    }, (error) => {
+      console.error("Error fetching orders:", error);
       setLoading(false);
-    } catch (error) {
-      console.log(error)
-      setLoading(false)
-    }
-  }
+    });
+  
+    // Cleanup function to unsubscribe from the listener when component unmounts
+    return () => unsubscribe();
+  };
+  
   
   const [user, setUser] = useState([]);
 

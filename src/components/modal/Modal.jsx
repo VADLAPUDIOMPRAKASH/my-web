@@ -3,21 +3,22 @@ import { Fragment, useState } from 'react'
 import { addDoc, collection } from 'firebase/firestore'
 import { fireDB } from '../../firebase/FirebaseConfig'
 import { toast } from 'react-toastify'
+import { useDispatch } from 'react-redux'
+import { clearCart } from '../../redux/cartSlice'
 
 export default function Modal({ name, address, pincode, phoneNumber, setName, setAddress, setPincode, setPhoneNumber, cartItems = [], totalAmount }) {
     const [isOpen, setIsOpen] = useState(false)
-    const [showPaymentOptions, setShowPaymentOptions] = useState(false)
+    const dispatch = useDispatch()
 
     function closeModal() {
         setIsOpen(false)
-        setShowPaymentOptions(false)
     }
 
     function openModal() {
         setIsOpen(true)
     }
 
-    const handleOrderNow = () => {
+    const handleOrderNow = async () => {
         if (name === "" || address === "" || pincode === "" || phoneNumber === "") {
             return toast.error("All fields are required", {
                 position: "top-center",
@@ -30,16 +31,14 @@ export default function Modal({ name, address, pincode, phoneNumber, setName, se
                 theme: "colored",
             })
         }
-        setShowPaymentOptions(true)
-    }
 
-    const handleCashOnDelivery = async () => {
         const orderInfo = {
             cartItems: cartItems.map(item => ({
                 title: item.title,
                 price: item.price,
                 description: item.description,
-                imageUrl: item.imageUrl
+                imageUrl: item.imageUrl,
+                qunatity: item.quantity
             })),
             addressInfo: {
                 name,
@@ -67,74 +66,22 @@ export default function Modal({ name, address, pincode, phoneNumber, setName, se
         try {
             const orderRef = collection(fireDB, 'orders')
             await addDoc(orderRef, orderInfo)
+            
+            // Clear the cart after successful order
+            dispatch(clearCart())
+            
+            // Clear the form fields
+            setName("")
+            setAddress("")
+            setPincode("")
+            setPhoneNumber("")
+            
             toast.success('Order placed successfully')
             closeModal()
         } catch (error) {
             console.log(error)
             toast.error('Failed to place order')
         }
-    }
-
-    const handleOnlinePayment = () => {
-        var options = {
-            key: "",
-            key_secret: "",
-            amount: parseInt(totalAmount * 100),
-            currency: "INR",
-            order_receipt: 'order_rcptid_' + name,
-            name: "E-Bharat",
-            description: "for testing purpose",
-            handler: function (response) {
-                console.log(response)
-                toast.success('Payment Successful')
-                const paymentId = response.razorpay_payment_id
-
-                const orderInfo = {
-                    cartItems: cartItems.map(item => ({
-                        title: item.title,
-                        price: item.price,
-                        description: item.description,
-                        imageUrl: item.imageUrl
-                    })),
-                    addressInfo: {
-                        name,
-                        address,
-                        pincode,
-                        phoneNumber,
-                        date: new Date().toLocaleString("en-US", {
-                            month: "short",
-                            day: "2-digit",
-                            year: "numeric",
-                        })
-                    },
-                    date: new Date().toLocaleString("en-US", {
-                        month: "short",
-                        day: "2-digit",
-                        year: "numeric",
-                    }),
-                    email: JSON.parse(localStorage.getItem("user"))?.user?.email,
-                    userid: JSON.parse(localStorage.getItem("user"))?.user?.uid,
-                    paymentId,
-                    paymentMethod: "Online Payment",
-                    status: "Paid",
-                    totalAmount: totalAmount
-                }
-
-                try {
-                    const orderRef = collection(fireDB, 'orders')
-                    addDoc(orderRef, orderInfo)
-                } catch (error) {
-                    console.log(error)
-                }
-            },
-            theme: {
-                color: "#3399cc"
-            }
-        };
-
-        var pay = new window.Razorpay(options);
-        pay.open();
-        console.log(pay)
     }
 
     return (
@@ -145,7 +92,7 @@ export default function Modal({ name, address, pincode, phoneNumber, setName, se
                     onClick={openModal}
                     className="w-full bg-violet-600 py-2 text-center rounded-lg text-white font-bold"
                 >
-                    Buy Now
+                    Order Now
                 </button>
             </div>
 
@@ -231,32 +178,13 @@ export default function Modal({ name, address, pincode, phoneNumber, setName, se
                                     </div>
 
                                     <div className="mt-4">
-                                        {!showPaymentOptions ? (
-                                            <button
-                                                type="button"
-                                                className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                                                onClick={handleOrderNow}
-                                            >
-                                                Place Order
-                                            </button>
-                                        ) : (
-                                            <div className="space-y-2">
-                                                <button
-                                                    type="button"
-                                                    className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-900 hover:bg-green-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
-                                                    onClick={handleCashOnDelivery}
-                                                >
-                                                    Cash on Delivery
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                                                    onClick={handleOnlinePayment}
-                                                >
-                                                    Online Payment
-                                                </button>
-                                            </div>
-                                        )}
+                                        <button
+                                            type="button"
+                                            className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-900 hover:bg-green-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
+                                            onClick={handleOrderNow}
+                                        >
+                                            Place Order (Cash on Delivery)
+                                        </button>
                                     </div>
                                 </Dialog.Panel>
                             </Transition.Child>
